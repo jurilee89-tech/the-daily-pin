@@ -204,7 +204,7 @@ footer{display:flex;justify-content:space-between;gap:15px;border-top:1px solid 
 
   <main>
     <section id="today" class="view active">
-      <div class="hero">
+      <div id="todayEditor" class="hero">
         <div>
           <div class="eyebrow">Daily editor</div>
           <h2>Paste the whole paper.<br>Keep only the good parts.</h2>
@@ -369,6 +369,8 @@ function switchView(id){
 $$('.tab').forEach(t=>t.addEventListener('click',()=>{
   if(t.dataset.view==='today'){
     $('#today').classList.remove('reading-issue');
+    const editor=$('#todayEditor');
+    if(editor) editor.style.display='';
   }
   switchView(t.dataset.view);
 }));
@@ -722,6 +724,8 @@ function loadIssue(issue){
 
   // Archived issues open as a clean reading view.
   $('#today').classList.add('reading-issue');
+  const editor=$('#todayEditor');
+  if(editor) editor.style.display='none';
   switchView('today');
   showToast('Issue loaded');
 
@@ -755,6 +759,7 @@ function upsertDraft(){
 
 $('#parseArchive').onclick=()=>{
   $('#today').classList.remove('reading-issue');
+  const editor=$('#todayEditor'); if(editor) editor.style.display='';
   const text=$('#raw').value.trim();
   if(!text){showToast('Paste the daily paper first');return}
   draft=parseIssueText(text);
@@ -764,6 +769,7 @@ $('#parseArchive').onclick=()=>{
 $('#saveChanges').onclick=()=>upsertDraft();
 $('#clearDraft').onclick=()=>{
   $('#today').classList.remove('reading-issue');
+  const editor=$('#todayEditor'); if(editor) editor.style.display='';
   draft={date:todayISO(),theme:'',issueNo:'',intro:'',items:[],one:''};
   $('#raw').value=''; $('#theme').value=''; $('#date').value=todayISO();
   renderDraft();
