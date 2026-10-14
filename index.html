@@ -711,7 +711,22 @@ function loadIssue(issue){
   renderDraft();
   switchView('today');
   showToast('Issue loaded');
-  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Jump straight to ISSUE NOTES when opening an archived issue.
+  requestAnimationFrame(()=>{
+    const target=$('#issueIntroWrap');
+    if(target && target.classList.contains('show')){
+      const offset=window.innerWidth<=680 ? 14 : 22;
+      const y=target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({top:y,behavior:'smooth'});
+    }else{
+      const fallback=$('.feature');
+      if(fallback){
+        const y=fallback.getBoundingClientRect().top + window.scrollY - 18;
+        window.scrollTo({top:y,behavior:'smooth'});
+      }
+    }
+  });
 }
 function deleteIssue(date){
   if(!confirm(`${date} ISSUE를 삭제할까요?`)) return;
