@@ -1,4 +1,4 @@
-const CACHE='daily-pin-pwa-v3';
+const CACHE='daily-pin-pwa-v2';
 const APP=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
