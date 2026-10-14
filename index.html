@@ -175,6 +175,11 @@ footer{display:flex;justify-content:space-between;gap:15px;border-top:1px solid 
   footer{padding-bottom:6px}
 }
 
+
+#today.reading-issue .hero{display:none}
+#today.reading-issue{padding-top:22px}
+#today.reading-issue .issue-intro{border-top:0;padding-top:18px}
+
 </style>
 </head>
 <body>
@@ -361,7 +366,12 @@ function switchView(id){
   $$('.view').forEach(v=>v.classList.toggle('active',v.id===id));
   $$('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===id));
 }
-$$('.tab').forEach(t=>t.addEventListener('click',()=>switchView(t.dataset.view)));
+$$('.tab').forEach(t=>t.addEventListener('click',()=>{
+  if(t.dataset.view==='today'){
+    $('#today').classList.remove('reading-issue');
+  }
+  switchView(t.dataset.view);
+}));
 
 function openPinterest(q){
   if(!q) return;
@@ -709,22 +719,20 @@ function loadIssue(issue){
   draft=JSON.parse(JSON.stringify(issue));
   $('#raw').value='';
   renderDraft();
+
+  // Archived issues open as a clean reading view.
+  $('#today').classList.add('reading-issue');
   switchView('today');
   showToast('Issue loaded');
 
-  // Jump straight to ISSUE NOTES when opening an archived issue.
   requestAnimationFrame(()=>{
     const target=$('#issueIntroWrap');
-    if(target && target.classList.contains('show')){
-      const offset=window.innerWidth<=680 ? 14 : 22;
-      const y=target.getBoundingClientRect().top + window.scrollY - offset;
+    const fallback=$('.feature');
+    const el=(target && target.classList.contains('show')) ? target : fallback;
+    if(el){
+      const offset=window.innerWidth<=680 ? 8 : 18;
+      const y=el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({top:y,behavior:'smooth'});
-    }else{
-      const fallback=$('.feature');
-      if(fallback){
-        const y=fallback.getBoundingClientRect().top + window.scrollY - 18;
-        window.scrollTo({top:y,behavior:'smooth'});
-      }
     }
   });
 }
@@ -746,6 +754,7 @@ function upsertDraft(){
 }
 
 $('#parseArchive').onclick=()=>{
+  $('#today').classList.remove('reading-issue');
   const text=$('#raw').value.trim();
   if(!text){showToast('Paste the daily paper first');return}
   draft=parseIssueText(text);
@@ -754,6 +763,7 @@ $('#parseArchive').onclick=()=>{
 };
 $('#saveChanges').onclick=()=>upsertDraft();
 $('#clearDraft').onclick=()=>{
+  $('#today').classList.remove('reading-issue');
   draft={date:todayISO(),theme:'',issueNo:'',intro:'',items:[],one:''};
   $('#raw').value=''; $('#theme').value=''; $('#date').value=todayISO();
   renderDraft();
