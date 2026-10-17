@@ -822,11 +822,13 @@ $('#parseArchive').onclick=()=>{
   renderDraft();
   if(upsertDraft()){
     $('#raw').value='';
+    $('#theme').value='';
   }
 };
 $('#saveChanges').onclick=()=>{
   if(upsertDraft()){
     $('#raw').value='';
+    $('#theme').value='';
   }
 };
 $('#clearDraft').onclick=()=>{
