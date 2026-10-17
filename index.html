@@ -829,9 +829,15 @@ $('#parseArchive').onclick=()=>{
   if(!text){showToast('Paste the daily paper first');return}
   draft=parseIssueText(text);
   renderDraft();
-  upsertDraft();
+  if(upsertDraft()){
+    $('#raw').value='';
+  }
 };
-$('#saveChanges').onclick=()=>upsertDraft();
+$('#saveChanges').onclick=()=>{
+  if(upsertDraft()){
+    $('#raw').value='';
+  }
+};
 $('#clearDraft').onclick=()=>{
   $('#today').classList.remove('reading-issue');
   const editor=$('#todayEditor'); if(editor) editor.style.display='';
